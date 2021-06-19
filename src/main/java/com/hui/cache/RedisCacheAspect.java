@@ -32,7 +32,7 @@ public class RedisCacheAspect {
         this.redisCacheHandle = redisCacheHandle;
     }
 
-    @Around(value = "@annotation(RedisCacheGet)")
+    @Around("@annotation(com.hui.annotation.RedisCacheGet)")
     public Object cacheGet(ProceedingJoinPoint joinPoint) throws Throwable {
         if (log.isDebugEnabled()) {
             log.debug("Enter: {}.{}() with argument[s] = {}", joinPoint.getSignature().getDeclaringTypeName(),
@@ -45,7 +45,7 @@ public class RedisCacheAspect {
 
     }
 
-    @Around(value = "@annotation(RedisCacheClean)")
+    @Around("@annotation(com.hui.annotation.RedisCacheClean)")
     public Object cacheClean(ProceedingJoinPoint joinPoint) throws Throwable {
         if (log.isDebugEnabled()) {
             log.debug("Enter: {}.{}() with argument[s] = {}", joinPoint.getSignature().getDeclaringTypeName(),

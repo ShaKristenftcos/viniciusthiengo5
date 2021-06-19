@@ -135,13 +135,13 @@ public class RedisCacheHandle implements RedisCache {
         long timeMillis = System.currentTimeMillis();
         if (object != null) {
             //设置缓存时长
-            if (methodType.expire() == 0) {
+           /* if (methodType.expire() == 0) {
                 redisRepositry.set(key, object);
             } else if (methodType.expire() == 1) {
                 redisRepositry.set(SerializationUtils.encode(key), SerializationUtils.serialize(object), ONEDAY);
             } else {
                 redisRepositry.set(SerializationUtils.encode(key), SerializationUtils.serialize(object), methodType.expire());
-            }
+            }*/
         }
         long l = System.currentTimeMillis() - timeMillis;
         log.debug("CLASS write from redis spend > " + l + " <millis");
@@ -158,10 +158,6 @@ public class RedisCacheHandle implements RedisCache {
         if (object != null) {
             if (methodType.expire() == 0) {//0:永不过期
                 redisRepositry.set(key, JSONUtils.toJsonStr(object));
-            } else if (methodType.expire() == 1) {//1:过期时间为24h
-                redisRepositry.set(key, JSONUtils.toJsonStr(object), ONEDAY);
-            } else {//手动指定
-                redisRepositry.set(key, JSONUtils.toJsonStr(object), methodType.expire());
             }
         }
         long l = System.currentTimeMillis() - timeMillis;
