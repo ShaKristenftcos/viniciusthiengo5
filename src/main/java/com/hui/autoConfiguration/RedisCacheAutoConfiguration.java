@@ -1,4 +1,4 @@
-package com.hui.config;
+package com.hui.autoConfiguration;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
@@ -14,12 +14,12 @@ import redis.clients.jedis.JedisPool;
  */
 
 @Configuration
-public class RedisCacheConfig {
+public class RedisCacheAutoConfiguration {
 
     private RedisProperties redisProperties = null;
 
     @Autowired
-    public RedisCacheConfig() {
+    public RedisCacheAutoConfiguration() {
         redisProperties = new RedisProperties();
         redisProperties.setHost("127.0.0.1");
         this.redisProperties = redisProperties;
