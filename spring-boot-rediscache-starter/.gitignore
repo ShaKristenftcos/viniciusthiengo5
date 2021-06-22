@@ -23,4 +23,3 @@ dist/
 nbdist/
 .nb-gradle/
 src/main/java/com/hui/core/
-spring-boot-rediscache-starter/src/test/
