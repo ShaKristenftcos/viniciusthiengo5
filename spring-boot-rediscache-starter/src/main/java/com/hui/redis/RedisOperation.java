@@ -14,6 +14,7 @@ interface RedisOperation {
 
     boolean exists(String key);
 
+    boolean exists(byte[] key);
 
     String setBatch(final int DBIndex, final Map<String, String> values);
 
@@ -23,7 +24,15 @@ interface RedisOperation {
 
     String set(final String key, final String value);
 
+    String set(final String key, final String value, final int dbIndex);
+
+    String set(final String key, final String value, final int dbIndex, final int seconds);
+
     String set(final byte[] key, final byte[] value);
+
+    String set(final byte[] key, final byte[] value, final int dbIndex);
+
+    String set(final byte[] key, final byte[] value, final int dbIndex, final int seconds);
 
     String get(final String key);
 

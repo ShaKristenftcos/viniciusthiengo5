@@ -29,12 +29,12 @@ public class RedisCacheProperties {
             return host;
         }
 
-        public void setHost(String host) {
-            this.host = host;
-        }
-
         public int getPort() {
             return port;
+        }
+
+        public void setHost(String host) {
+            this.host = host;
         }
 
         public void setPort(int port) {

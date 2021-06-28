@@ -11,9 +11,14 @@ import redis.clients.util.SafeEncoder;
 import java.util.*;
 
 @Repository
-public class RedisRepositry extends AbstractRedisRepositry implements RedisOperation{
+public class RedisRepositry extends AbstractRedisRepositry implements RedisOperation {
 
     public boolean exists(String key) {
+        return doOperation(jedis -> jedis.exists(key));
+    }
+
+    @Override
+    public boolean exists(byte[] key) {
         return doOperation(jedis -> jedis.exists(key));
     }
 
@@ -67,8 +72,40 @@ public class RedisRepositry extends AbstractRedisRepositry implements RedisOpera
     }
 
     @Override
+    public String set(String key, String value, int dbIndex) {
+        return doOperation(jedis -> {
+            jedis.select(dbIndex);
+            return jedis.set(key, value);
+        });
+    }
+
+    @Override
+    public String set(String key, String value, int dbIndex, int seconds) {
+        return doOperation(jedis -> {
+            jedis.select(dbIndex);
+            return jedis.setex(key, seconds, value);
+        });
+    }
+
+    @Override
     public String set(byte[] key, byte[] value) {
         return doOperation(jedis -> jedis.set(key, value));
+    }
+
+    @Override
+    public String set(byte[] key, byte[] value, int dbIndex) {
+        return doOperation(jedis -> {
+            jedis.select(dbIndex);
+            return jedis.set(key, value);
+        });
+    }
+
+    @Override
+    public String set(byte[] key, byte[] value, int dbIndex, int seconds) {
+        return doOperation(jedis -> {
+            jedis.select(dbIndex);
+            return jedis.setex(key, seconds, value);
+        });
     }
 
     public String get(final String key) {
