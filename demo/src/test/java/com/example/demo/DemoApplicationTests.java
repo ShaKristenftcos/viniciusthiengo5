@@ -13,22 +13,23 @@ import org.springframework.test.context.junit4.SpringRunner;
 @EnableAutoConfiguration
 public class DemoApplicationTests {
 
-	@Autowired
-	private DemoService demoService;
+    @Autowired
+    private DemoService demoService;
 
-	@Test
-	public void contextLoads() {
 
-	}
+    @Test
+    public void getHello() {
+        long l = System.currentTimeMillis();
+        demoService.getHello();
+        System.out.println(System.currentTimeMillis() - l);
+        l = System.currentTimeMillis();
+        demoService.getHello();
+        System.out.println(System.currentTimeMillis() - l);
+    }
 
-	@Test
-	public void getHello() throws Exception {
-		long l = System.currentTimeMillis();
-		demoService.getHello();
-		System.out.println(System.currentTimeMillis()-l);
-		l = System.currentTimeMillis();
-		demoService.getHello();
-		System.out.println(System.currentTimeMillis()-l);
+    @Test
+    public void updateHello() {
+        demoService.updateHello();
+    }
 
-	}
 }
