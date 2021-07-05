@@ -14,7 +14,7 @@
 
 - 1、拉取项目后，对 `spring-boot-rediscache-starter`项目执行 `mvn install`操作
 - 2、在项目pom.xml中引入：
-```xml
+```
 <dependency>
     <groupId>com.hui</groupId>
     <artifactId>spring-boot-rediscache-starter</artifactId>
