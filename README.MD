@@ -14,7 +14,7 @@
 
 - 1、拉取项目后，对 `spring-boot-rediscache-starter`项目执行 `mvn install`操作
 - 2、在项目pom.xml中引入：
-```
+``` java
 <dependency>
     <groupId>com.hui</groupId>
     <artifactId>spring-boot-rediscache-starter</artifactId>
@@ -35,7 +35,7 @@ redisCache
 ```
 > 到这里整个reidsCache配置完成，下面开始使用他吧
       
-- 4、业务中如何使用
+- 4、在业务代码中如何使用
 ```java
     @RedisCacheGet(key = "'getHello'")
     public String getHello(){
