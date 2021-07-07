@@ -15,7 +15,7 @@ import redis.clients.jedis.exceptions.JedisException;
  * @Date 2017/6/5 0005
  */
 @Repository
-public class AbstractRedisRepositry {
+public abstract class AbstractRedisRepositry {
 
     @Autowired
     private JedisPool jedisPool;

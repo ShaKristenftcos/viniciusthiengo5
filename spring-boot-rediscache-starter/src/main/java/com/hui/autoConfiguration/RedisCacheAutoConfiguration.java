@@ -1,14 +1,10 @@
 package com.hui.autoConfiguration;
 
 import com.hui.cache.CacheException;
+import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfigureBefore;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
-import org.springframework.boot.autoconfigure.jms.JmsAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -38,7 +34,8 @@ public class RedisCacheAutoConfiguration {
     public JedisPool reidsPool() {
         try {
             RedisCacheProperties.Redis redis = redisProperties.getRedis();
-            JedisPool jedisPool = new JedisPool(redis.getHost(), redis.getPort());
+            GenericObjectPoolConfig poolConfig = new GenericObjectPoolConfig();
+            JedisPool jedisPool = new JedisPool(poolConfig,redis.getHost(), redis.getPort());
             return jedisPool;
         } catch (Exception e) {
             throw new CacheException("jedisPool init faild!", e.getCause());

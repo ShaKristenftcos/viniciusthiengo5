@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.service;
 
 import com.hui.annotation.RedisCacheClean;
 import com.hui.annotation.RedisCacheGet;
@@ -26,6 +26,6 @@ public class DemoService implements Serializable{
 
     @RedisCacheClean(key = "'getHello'")
     public void updateHello(){
-        log.info("com.example.demo.DemoService.updateHello");
+        log.info("com.example.demo.service.DemoService.updateHello");
     }
 }

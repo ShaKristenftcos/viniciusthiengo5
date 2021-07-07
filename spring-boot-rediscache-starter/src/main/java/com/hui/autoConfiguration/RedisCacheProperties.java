@@ -21,9 +21,11 @@ public class RedisCacheProperties {
         this.redis = redis;
     }
 
-    public static class Redis {
-        private String host = "127.0.0.1";
+    public static class Redis{
+        private String host;
         private int port = 6379;
+        private Integer timeout = 5000;
+        private String password = "";
 
         public String getHost() {
             return host;
@@ -39,6 +41,22 @@ public class RedisCacheProperties {
 
         public void setPort(int port) {
             this.port = port;
+        }
+
+        public Integer getTimeout() {
+            return timeout;
+        }
+
+        public void setTimeout(Integer timeout) {
+            this.timeout = timeout;
+        }
+
+        public String getPassword() {
+            return password;
+        }
+
+        public void setPassword(String password) {
+            this.password = password;
         }
     }
 }

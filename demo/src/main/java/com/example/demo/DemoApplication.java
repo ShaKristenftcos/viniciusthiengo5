@@ -1,5 +1,7 @@
 package com.example.demo;
 
+import com.example.demo.service.DemoService;
+import com.hui.redis.RedisRepositry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -13,10 +15,14 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 public class DemoApplication {
 
 	@Autowired
+	RedisRepositry redisRepositry;
+
+	@Autowired
 	private DemoService demoService;
 
 	@RequestMapping("/get")
 	public String get(){
+		redisRepositry.get("key");
 		return demoService.getHello();
 	}
 
