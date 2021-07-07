@@ -3,8 +3,8 @@ package com.hui.cache;
 import com.hui.annotation.RedisCacheClean;
 import com.hui.annotation.RedisCacheGet;
 import com.hui.redis.RedisRepositry;
-import com.hui.serializer.SerializationUtils;
-import com.hui.utils.JSONUtils;
+import com.hui.serializer.Serializer;
+import com.hui.serializer.JsonSerializer;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,11 +15,11 @@ import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StopWatch;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -36,10 +36,12 @@ public class RedisCacheHandle implements RedisCache {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final RedisRepositry redisRepositry;
+    private final Serializer serializer;
 
     @Autowired
-    public RedisCacheHandle(RedisRepositry redisRepositry) {
+    public RedisCacheHandle(RedisRepositry redisRepositry, Serializer serializer) {
         this.redisRepositry = redisRepositry;
+        this.serializer = serializer;
     }
 
     @Override
@@ -52,14 +54,13 @@ public class RedisCacheHandle implements RedisCache {
         ExpressionParser parser = new SpelExpressionParser();
         EvaluationContext context = new StandardEvaluationContext();
 
-        //获取被拦截方法参数名列表(使用Spring支持类库)
         LocalVariableTableParameterNameDiscoverer u = new LocalVariableTableParameterNameDiscoverer();
         String[] paraNameArr = u.getParameterNames(method);
-        //把方法参数放入SPEL上下文中
+
         for (int i = 0; i < paraNameArr.length; i++) {
             context.setVariable(paraNameArr[i], args[i]);
         }
-        //如果有这个注解，则获取注解类
+
         RedisCacheGet methodType = method.getAnnotation(RedisCacheGet.class);
         String key = parser.parseExpression(methodType.key()).getValue(context, String.class);
 
@@ -73,18 +74,18 @@ public class RedisCacheHandle implements RedisCache {
                         method.getGenericReturnType().toString().contains("Map")) {
                     String clazzName = ((ParameterizedType) method.getGenericReturnType()).getActualTypeArguments()[0].toString().substring(6);
                     Object o = Class.forName(clazzName).newInstance();
-                    List list = JSONUtils.parseCollection(json, method.getReturnType(), o.getClass());
+                    List list = JsonSerializer.parseCollection(json, method.getReturnType(), o.getClass());
                     return list;
                 } else {
-                    return JSONUtils.parse(json, method.getReturnType());
+                    return JsonSerializer.parse(json, method.getReturnType());
                 }
-            } else {//查询数据，缓存，返回对象
+            } else {
                 Object object = joinPoint.proceed(args);
                 setRedisValueJson(methodType, key, object);
                 return object;
             }
-        } else {//CLASS形式保存
-            if (redisRepositry.exists(key)) {//对象存在直接返回
+        } else {
+            if (redisRepositry.exists(key)) {
                 long old = System.currentTimeMillis();
                 Object o = redisRepositry.get(key);
                 log.debug("CLASS read from redis spend > " + (System.currentTimeMillis() - old) + " <millis");
@@ -106,20 +107,45 @@ public class RedisCacheHandle implements RedisCache {
      * @param object
      */
     private void setRedisValueClass(RedisCacheGet methodType, String key, Object object) {
-        long timeMillis = System.currentTimeMillis();
+        StopWatch watch = new StopWatch("setRedisValueClass");
+        watch.start();
         if (object != null) {
-            //设置缓存时长
             if (methodType.expire() == 0) {
-                redisRepositry.set(SerializationUtils.encode(key), SerializationUtils.serialize(object));
+                redisRepositry.set(serializer.serialize(key), serializer.serialize(object));
             } else if (methodType.expire() == 1) {
-                redisRepositry.set(SerializationUtils.encode(key), SerializationUtils.serialize(object));
+                redisRepositry.set(serializer.serialize(key), serializer.serialize(object), ONEDAY);
             } else {
-                redisRepositry.set(SerializationUtils.encode(key), SerializationUtils.serialize(object));
+                redisRepositry.set(serializer.serialize(key), serializer.serialize(object), methodType.expire());
             }
         }
-        long l = System.currentTimeMillis() - timeMillis;
-        log.debug("CLASS write from redis spend > " + l + " <millis");
+        watch.stop();
+        if (log.isDebugEnabled()) {
+            log.debug("{} use time millis {}", watch.currentTaskName(), watch.getTotalTimeMillis());
+        }
 
+    }
+
+    /**
+     * @param methodType
+     * @param key
+     * @param value
+     */
+    private void setRedisValueJson(RedisCacheGet methodType, String key, Object value) {
+        StopWatch watch = new StopWatch("setRedisValueJson");
+        watch.start();
+        if (value != null) {
+            if (methodType.expire() == 0) {
+                redisRepositry.set(key, value);
+            } else if (methodType.expire() == 1) {
+                redisRepositry.set(serializer.serialize(key), serializer.serialize(value), ONEDAY);
+            } else {
+                redisRepositry.set(serializer.serialize(key), serializer.serialize(value), methodType.expire());
+            }
+        }
+        watch.stop();
+        if (log.isDebugEnabled()) {
+            log.debug("{} use time millis {}", watch.currentTaskName(), watch.getTotalTimeMillis());
+        }
     }
 
     @Override
@@ -131,17 +157,14 @@ public class RedisCacheHandle implements RedisCache {
         ExpressionParser parser = new SpelExpressionParser();
         EvaluationContext context = new StandardEvaluationContext();
 
-        //获取被拦截方法参数名列表(使用Spring支持类库)
         LocalVariableTableParameterNameDiscoverer u = new LocalVariableTableParameterNameDiscoverer();
         String[] paraNameArr = u.getParameterNames(method);
-        //把方法参数放入SPEL上下文中
+
         for (int i = 0; i < paraNameArr.length; i++) {
             context.setVariable(paraNameArr[i], args[i]);
         }
-        //如果有这个注解，则获取注解类
         Object object = joinPoint.proceed(args);
 
-        //如果有这个注解，则获取注解类
         RedisCacheClean methodType = method.getAnnotation(RedisCacheClean.class);
         for (String str : methodType.key()) {
             String key = parser.parseExpression(str).getValue(context, String.class);
@@ -155,23 +178,6 @@ public class RedisCacheHandle implements RedisCache {
         }
         return object;
     }
-
-    /**
-     * @param methodType
-     * @param key
-     * @param object
-     */
-    private void setRedisValueJson(RedisCacheGet methodType, String key, Object object) {
-        long timeMillis = System.currentTimeMillis();
-        if (object != null) {
-            if (methodType.expire() == 0) {//0:永不过期
-                redisRepositry.set(key, JSONUtils.toJsonStr(object));
-            }
-        }
-        long l = System.currentTimeMillis() - timeMillis;
-        log.debug("JSON write from redis spend > " + l + " <millis");
-    }
-
 
 }
 

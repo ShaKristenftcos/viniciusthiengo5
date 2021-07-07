@@ -1,8 +1,11 @@
 
 package com.hui.serializer;
 
-
-public interface RedisSerializer<T> {
+/**
+ * @param <T> source
+ * @param <R> target
+ */
+public interface Serializer<T, R> {
 
     /**
      * Serialize the given object to binary data.
@@ -10,13 +13,13 @@ public interface RedisSerializer<T> {
      * @param t object to serialize
      * @return the equivalent binary data
      */
-    byte[] serialize(T t) throws SerializationException;
+    R serialize(T t) throws SerializationException;
 
     /**
      * Deserialize an object from the given binary data.
      *
-     * @param bytes object binary representation
+     * @param r object binary representation
      * @return the equivalent object instance
      */
-    T deserialize(byte[] bytes) throws SerializationException;
+    T deserialize(R r) throws SerializationException;
 }

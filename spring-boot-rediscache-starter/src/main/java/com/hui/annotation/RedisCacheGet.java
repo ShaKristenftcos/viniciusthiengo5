@@ -9,7 +9,7 @@ import java.lang.annotation.*;
 public @interface RedisCacheGet {
 
     //枚举类型
-    public enum DataType {
+    enum DataType {
         CLASS, JSON
     }
 
@@ -18,7 +18,7 @@ public @interface RedisCacheGet {
      *
      * @return
      */
-    public String key();
+    String key();
 
     /**
      * 缓存过期时间默认为不过期，过期时间手动去设定，单位为 S
@@ -26,7 +26,7 @@ public @interface RedisCacheGet {
      *
      * @return
      */
-    public int expire() default 1;
+    int expire() default 1;
 
 
     /**
@@ -34,6 +34,6 @@ public @interface RedisCacheGet {
      *
      * @return
      */
-    public DataType dataType() default DataType.CLASS;
+    DataType dataType() default DataType.CLASS;
 
 }

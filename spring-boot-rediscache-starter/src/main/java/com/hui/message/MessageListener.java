@@ -1,4 +1,4 @@
-package com.hui.redis;
+package com.hui.message;
 
 /**
  * @version 0.0.1.

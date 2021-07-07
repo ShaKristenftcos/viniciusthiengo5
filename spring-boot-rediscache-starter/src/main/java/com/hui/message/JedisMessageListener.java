@@ -1,4 +1,4 @@
-package com.hui.redis;
+package com.hui.message;
 
 import org.springframework.util.Assert;
 import redis.clients.jedis.BinaryJedisPubSub;
@@ -9,6 +9,7 @@ import redis.clients.jedis.BinaryJedisPubSub;
  * @Author Hui
  * @Date 2017/6/7 0007
  */
+
 public class JedisMessageListener extends BinaryJedisPubSub {
 
 

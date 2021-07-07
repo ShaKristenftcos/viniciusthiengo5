@@ -2,6 +2,7 @@ package com.hui.serializer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 import redis.clients.jedis.Protocol;
 import redis.clients.jedis.exceptions.JedisDataException;
 import redis.clients.jedis.exceptions.JedisException;
@@ -9,17 +10,17 @@ import redis.clients.jedis.exceptions.JedisException;
 import java.io.*;
 
 /**
- * 序列化工具类
  *
  * @author huiqiang.yang
  * @version SerializationUtils
  * @time 2016/7/24 0024
  */
-public class SerializationUtils {
+@Component
+public class JdkSerializer implements Serializer<Object, byte[]> {
 
-    private final static Logger log = LoggerFactory.getLogger(SerializationUtils.class);
+    private final static Logger log = LoggerFactory.getLogger(JdkSerializer.class);
 
-    public static byte[] serialize(Object o) {
+    public byte[] serialize(Object o) {
         if (o == null) {
             return new byte[0];
         }
@@ -37,7 +38,7 @@ public class SerializationUtils {
         return rv;
     }
 
-    public static Object deserialize(byte[] in) {
+    public Object deserialize(byte[] in) {
         Object rv = null;
         try {
             if (in != null) {

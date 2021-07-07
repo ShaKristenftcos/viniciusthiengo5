@@ -26,6 +26,7 @@ public class RedisCacheProperties {
         private int port = 6379;
         private Integer timeout = 5000;
         private String password = "";
+        private int dbIndex;
 
         public String getHost() {
             return host;
@@ -57,6 +58,14 @@ public class RedisCacheProperties {
 
         public void setPassword(String password) {
             this.password = password;
+        }
+
+        public int getDbIndex() {
+            return dbIndex;
+        }
+
+        public void setDbIndex(int dbIndex) {
+            this.dbIndex = dbIndex;
         }
     }
 }

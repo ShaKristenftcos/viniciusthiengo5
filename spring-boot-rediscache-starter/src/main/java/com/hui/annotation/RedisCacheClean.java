@@ -13,5 +13,5 @@ public @interface RedisCacheClean {
      *
      * @return
      */
-    public String[] key();
+    String[] key();
 }

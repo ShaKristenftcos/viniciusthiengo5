@@ -1,4 +1,4 @@
-package com.hui.redis;
+package com.hui.message;
 
 import java.io.Serializable;
 
@@ -10,7 +10,17 @@ import java.io.Serializable;
  */
 public interface Message extends Serializable {
 
+    /**
+     * message body
+     *
+     * @return
+     */
     byte[] getBody();
 
+    /**
+     * message channel
+     *
+     * @return
+     */
     byte[] getChannel();
 }

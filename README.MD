@@ -47,6 +47,14 @@ redisCache
         log.info("com.example.demo.DemoService.updateHello");
     }
 ```
+
+也许不仅仅使用到的是redis缓存，你还需要手动调用一些redis的方法，可以注入 `redisRepositry`,`redisRepositry`提供强大的丰富的底层操作方法。
+
+```java
+@Autowired
+	RedisRepositry redisRepositry;
+```
+
 > [注意]：示例代码中的key = "'key''"而不是"key",因为这里实现使用了Spel
 
 > 相比SpringCache RedisCache 的key值是自定义的，同时reids存储支持两种序列化方式，一种是Jdk自带的Serializable（需要对缓存的对象实现Serializable）,另一种是Json格式，存储结果可读性更高  

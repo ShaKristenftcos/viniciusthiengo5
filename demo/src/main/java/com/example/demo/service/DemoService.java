@@ -28,4 +28,5 @@ public class DemoService implements Serializable{
     public void updateHello(){
         log.info("com.example.demo.service.DemoService.updateHello");
     }
+
 }
