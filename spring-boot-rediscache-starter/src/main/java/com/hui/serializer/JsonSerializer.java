@@ -6,13 +6,10 @@ import org.codehaus.jackson.type.JavaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * @author huiqiang.yang
@@ -52,12 +49,8 @@ public class JsonSerializer<T> implements Serializer<T, String> {
     @Override
     public T deserialize(String jsonStr) throws SerializationException {
         T obj = null;
-        try {
-            if (js)
-            obj = getMapper().readValue(jsonStr, );
-        } catch (IOException e) {
-            log.error(e.getMessage());
-        }
+/*        if (js)
+        obj = getMapper().readValue(jsonStr, );*/
         return obj;
     }
 

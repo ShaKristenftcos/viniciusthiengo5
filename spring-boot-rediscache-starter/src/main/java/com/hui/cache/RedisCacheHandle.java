@@ -74,10 +74,10 @@ public class RedisCacheHandle implements RedisCache {
                         method.getGenericReturnType().toString().contains("Map")) {
                     String clazzName = ((ParameterizedType) method.getGenericReturnType()).getActualTypeArguments()[0].toString().substring(6);
                     Object o = Class.forName(clazzName).newInstance();
-                    List list = JsonSerializer.parseCollection(json, method.getReturnType(), o.getClass());
+                    List list = null;//JsonSerializer.parseCollection(json, method.getReturnType(), o.getClass());
                     return list;
                 } else {
-                    return JsonSerializer.parse(json, method.getReturnType());
+//                    return JsonSerializer.parse(json, method.getReturnType());
                 }
             } else {
                 Object object = joinPoint.proceed(args);
@@ -99,6 +99,7 @@ public class RedisCacheHandle implements RedisCache {
             }
 
         }
+        return null;
     }
 
     /**
@@ -110,13 +111,13 @@ public class RedisCacheHandle implements RedisCache {
         StopWatch watch = new StopWatch("setRedisValueClass");
         watch.start();
         if (object != null) {
-            if (methodType.expire() == 0) {
+            /*if (methodType.expire() == 0) {
                 redisRepositry.set(serializer.serialize(key), serializer.serialize(object));
             } else if (methodType.expire() == 1) {
                 redisRepositry.set(serializer.serialize(key), serializer.serialize(object), ONEDAY);
             } else {
                 redisRepositry.set(serializer.serialize(key), serializer.serialize(object), methodType.expire());
-            }
+            }*/
         }
         watch.stop();
         if (log.isDebugEnabled()) {
@@ -134,13 +135,13 @@ public class RedisCacheHandle implements RedisCache {
         StopWatch watch = new StopWatch("setRedisValueJson");
         watch.start();
         if (value != null) {
-            if (methodType.expire() == 0) {
+            /*if (methodType.expire() == 0) {
                 redisRepositry.set(key, value);
             } else if (methodType.expire() == 1) {
                 redisRepositry.set(serializer.serialize(key), serializer.serialize(value), ONEDAY);
             } else {
                 redisRepositry.set(serializer.serialize(key), serializer.serialize(value), methodType.expire());
-            }
+            }*/
         }
         watch.stop();
         if (log.isDebugEnabled()) {

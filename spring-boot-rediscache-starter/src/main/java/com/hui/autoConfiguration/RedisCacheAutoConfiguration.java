@@ -35,8 +35,7 @@ public class RedisCacheAutoConfiguration {
         try {
             RedisCacheProperties.Redis redis = redisProperties.getRedis();
             GenericObjectPoolConfig poolConfig = new GenericObjectPoolConfig();
-            JedisPool jedisPool = new JedisPool(poolConfig, redis.getHost(), redis.getPort(), redis.getTimeout(), redis.getPassword(), redis.getDbIndex());
-            return jedisPool;
+            return new JedisPool(poolConfig, redis.getHost(), redis.getPort(), redis.getTimeout(), redis.getPassword(), redis.getDbIndex());
         } catch (Exception e) {
             throw new CacheException("jedisPool init faild!", e.getCause());
         }

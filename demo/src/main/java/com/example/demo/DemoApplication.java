@@ -9,16 +9,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 @SpringBootApplication
 @EnableWebMvc
 @RestController
 public class DemoApplication {
 
-	@Autowired
-	RedisRepositry redisRepositry;
+	private final RedisRepositry redisRepositry;
+
+	private final DemoService demoService;
 
 	@Autowired
-	private DemoService demoService;
+	public DemoApplication(RedisRepositry redisRepositry, DemoService demoService) {
+		this.redisRepositry = redisRepositry;
+		this.demoService = demoService;
+	}
 
 	@RequestMapping("/get")
 	public String get(){
